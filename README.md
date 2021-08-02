@@ -33,17 +33,17 @@ Extend your application with the database layer: save and fetch the application 
 
 ## Technical Limitations
 
-1. Any external dependency that is not specified in this document or is not compatible with the requirements must be discussed with technical mentors in the school chat. After approval, it will be added to this document.
+1. Any external dependency/tool/library/framework that is not specified in this document or is not compatible with the requirements must be discussed with the mentor in the school chat. After approval, it will be added to this document and them can be used in the project.
 2. Any dependency management tool is allowed (go modules are preferable).
 3. Handlers must accept requests and send responses in JSON format.
-4. Any external router compatible with standard with net/http server and handlers is allowed (e.g. gorilla/mux, go-chi/chi).
-5. Documentation for the HTTP API must be present. It could be written with any tool (like Swagger) or in the Readme/Documentation file(s) in the repository.
-6. All errors must be logged. Any other information could be logged (up to you).
-7. Any external logger is allowed (we use uber/zap).
-8. You must use _database/sql_ with any DB driver to work with the database (PostgreSQL is preferable, but is not required).
-9. Tests must be present: unit tests and request tests (using net/http/httptest package).
+4. Any external router compatible with standard with _net/http_ server and handlers is allowed (e.g. _gorilla/mux_, _go-chi/chi_).
+5. Documentation for the HTTP API must be present as a swagger.yaml.
+6. All errors *must be* logged on ERROR level. Any other information *could be* logged on DEBUG level.
+7. Any external logger is allowed (use _uber/zap_, _sirupsen/logrus_ or _rs/zerolog_).
+8. You may use _database/sql_ or any ORM (e.g. _gorm_) with any DB driver to work with RDBMS (PostgreSQL is preferable, but is not required).
+9. Tests must be present: unit tests and request tests (see _net/http/httptest_ package).
 10. Any dependencies for testing purposes are allowed.
-11. Instruction on how to start-up the application must be present.
+11. Instruction on how to start-up the application must be present in README.
 12. Pull Request on any platform (GitHub, GitLab, ...) must be opened.
 13. The application must be deployed to any cloud provider: AWS, GCP, Azure, Heroku, etc. (Heroku is free and suits well for small projects). Please, attach the corresponding link in README file.
 
