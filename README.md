@@ -84,7 +84,7 @@ _User_ must be able to rename a _Column_
 _User_ must be able to manage (create, read, update, delete) _Tasks_:
 
 - _Task_ can be created only within a _Column_;
-- User can view _Tasks_ in all _Columns_ of a _Project_;
+- _User_ can view _Tasks_ in all _Columns_ of a _Project_;
 - _User_ can update the name and the description of the _Task_;
 - _User_ can delete the _Task_, with all _Comments_ related to this _Task_.
 
