@@ -14,20 +14,20 @@ A _Task_ can have _Comments_ that could contain questions or _Task_ clarificatio
 
 ## Technical Requirements
 
-The development could be divided into 3 phases: *Services*, *Handlers*, *DB*. Please, prefix each comment with the appropriate phase title like "Services: Add basic routes".
+The development could be divided into 3 layers: *Services*, *Handlers*, *DB*. Please, prefix each comment with the appropriate phase title like "Services: Add basic routes".
 
-It is not required to develop the application phase by phase, but keep in mind that you have to add all these parts to the application.
+It is not required to develop the application layer by layer, but keep in mind that you have to add all these parts to the application.
 Think about the architecture and build the basement for a future application extension.
 
-### Phase 1 (Services)
+### Phase 1 (Services layer)
 
 Create the core functionality of the application. Define the service level of the architecture that takes care of business logic. Keep in mind that you&#39;ll need to add handlers and DB layer.
 
-### Phase 2 (Handlers)
+### Phase 2 (Handlers layer)
 
 Extend your existing Core functionality with the HTTP server and handlers to be able to handle HTTP requests. Add the documentation for it.
 
-### Phase 3 (DB)
+### Phase 3 (DB layer)
 
 Extend your application with the database layer: save and fetch the application data from the database.
 
@@ -43,15 +43,15 @@ Extend your application with the database layer: save and fetch the application 
 8. You may use _database/sql_ or any ORM (e.g. _gorm_) with any DB driver to work with RDBMS (PostgreSQL is preferable, but is not required).
 9. Tests must be present: unit tests and request tests (see _net/http/httptest_ package).
 10. Any dependencies for testing purposes are allowed.
-11. Instruction on how to start-up the application must be present in README.
-12. Pull Request on any platform (GitHub, GitLab, ...) must be opened.
+11. Instruction on how to build, test and run the application must be presented in the README.
+12. Repository on any platform (GitHub, GitLab, ...) must be private and closed for all except the mentor(s). The code must be added via Pool/Merge Requests only.
 13. The application must be deployed to any cloud provider: AWS, GCP, Azure, Heroku, etc. (Heroku is free and suits well for small projects). Please, attach the corresponding link in README file.
 
 **Suggestions**
 
 You can use go-playground/validator ([https://github.com/go-playground/validator](https://github.com/go-playground/validator)) to validate an HTTP request or anything else if needed.
 
-**Allowed libraries**
+**Allowed/recommended libraries**
 
 - godotenv
 - github.com/Yalantis/go-config
