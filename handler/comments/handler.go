@@ -266,4 +266,38 @@ func (h *Handler) UpdateComment(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+//---------------------------------------------------------------------------//
+
+func (h *Handler) GetAllByTaskID(w http.ResponseWriter, r *http.Request) {
+	h.logger.Print("new GetAllByTaskID request")
+
+	vars := mux.Vars(r)
+	taskIdRaw, ok := vars["taskID"]
+	if !ok {
+		http.Error(w, "taskID is missing in parameters", http.StatusBadRequest)
+		h.logger.Println("taskID is missing in parameters")
+	}
+	taskID, err := strconv.Atoi(taskIdRaw)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.logger.Printf("error in converting taskID to int:%s", err.Error())
+		return
+	}
+	task, err := h.service.GetAllByTaskID(taskID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.logger.Printf("error in receiving tasks by columnID:%s", err.Error())
+		return
+	}
+	payload, err := json.Marshal(task)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.logger.Printf("error in GET task call - can't marshal object from db:%s", err.Error())
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(payload)
+	w.WriteHeader(http.StatusOK)
+}
+
 //===========================================================================//

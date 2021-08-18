@@ -23,13 +23,13 @@ type Repository interface {
 	//-----------------------------------------//
 	GetTasks() ([]Task, error)
 	GetTask(id int) (*ExtendedTask, error)
-	UpdateTask(id int) error
+	UpdateTask(updatedTask *Task) error
 	CreateTask(task *Task) error
 	DeleteTask(projectID, columnID, taskID int) error
 	//-----------------------------------------//
 	GetComments() ([]Comment, error)
 	GetComment(id int) (*Comment, error)
-	UpdateComment(id int) error
+	UpdateComment(updatedComment *Comment) error
 	CreateComment(comment *Comment) error
 	DeleteComment(projectID, columnID, taskID, commentID int) error
 	//-----------------------------------------//
@@ -230,9 +230,8 @@ func (r *RepositoryImpl) GetTask(id int) (*ExtendedTask, error) {
 	return &extTask, nil
 }
 
-func (r *RepositoryImpl) UpdateTask(id int) error {
-	err := r.db.Save(&id).Error
-	return err
+func (r *RepositoryImpl) UpdateTask(updatedTask *Task) error {
+	return r.db.Save(updatedTask).Error
 }
 
 func (r *RepositoryImpl) CreateTask(task *Task) error {
@@ -254,12 +253,12 @@ func (r *RepositoryImpl) GetComments() ([]Comment, error) {
 
 func (r *RepositoryImpl) GetComment(id int) (*Comment, error) {
 	var comment *Comment
-	err := r.db.First(&comment, id).Error
+	err := r.db.Find(&comment, "id = ?", id).Error
 	return comment, err
 }
 
-func (r *RepositoryImpl) UpdateComment(id int) error {
-	err := r.db.Save(&id).Error
+func (r *RepositoryImpl) UpdateComment(updatedComment *Comment) error {
+	err := r.db.Save(updatedComment).Error
 	return err
 }
 

@@ -12,6 +12,7 @@ type Service interface {
 	CreateComment(task *dal.Comment) error
 	DeleteComment(projectID, columnID, taskID, commentID int) error
 	UpdateComment(task *dal.Comment) error
+	GetAllByTaskID(taskID int) ([]dal.Comment, error)
 }
 
 type UseCase struct {
@@ -41,11 +42,19 @@ func (c *UseCase) DeleteComment(projectID, columnID, taskID, commentID int) erro
 }
 
 func (c *UseCase) UpdateComment(comment *dal.Comment) error {
-	oldComment, err := c.repo.GetComment(comment.ID)
+	_, err := c.repo.GetComment(comment.ID)
 	if err != nil {
 
 		return err
 	}
-	err = c.repo.CreateComment(oldComment)
+	err = c.repo.UpdateComment(comment)
 	return err
+}
+
+func (c *UseCase) GetAllByTaskID(taskID int) ([]dal.Comment, error) {
+	task, err := c.repo.GetTask(taskID)
+	if err != nil {
+		return nil, err
+	}
+	return task.Comments, nil
 }

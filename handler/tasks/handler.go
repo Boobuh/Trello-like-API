@@ -228,3 +228,39 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
+
+//---------------------------------------------------------------------------//
+
+func (h *Handler) GetAllByColumnID(w http.ResponseWriter, r *http.Request) {
+	h.logger.Print("new GetAllByProjectID request")
+
+	vars := mux.Vars(r)
+	columnIDRaw, ok := vars["columnID"]
+	if !ok {
+		http.Error(w, "columnID is missing in parameters", http.StatusBadRequest)
+		h.logger.Println("columnID is missing in parameters")
+	}
+	columnID, err := strconv.Atoi(columnIDRaw)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.logger.Printf("error in converting id to int:%s", err.Error())
+		return
+	}
+	column, err := h.service.GetAllByColumnID(columnID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.logger.Printf("error in receiving tasks by columnID:%s", err.Error())
+		return
+	}
+	payload, err := json.Marshal(column)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.logger.Printf("error in GET projects call - can't marshal object from db:%s", err.Error())
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(payload)
+	w.WriteHeader(http.StatusOK)
+}
+
+//---------------------------------------------------------------------------//

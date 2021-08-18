@@ -12,6 +12,7 @@ type Service interface {
 	CreateTask(task *dal.Task) error
 	DeleteTask(projectID, columnID, taskID int) error
 	UpdateTask(task *dal.Task) error
+	GetAllByColumnID(columnID int) ([]dal.ExtendedTask, error)
 }
 
 type UseCase struct {
@@ -48,6 +49,14 @@ func (c *UseCase) UpdateTask(task *dal.Task) error {
 	}
 	err = c.repo.CreateTask(task)
 	return err
+}
+
+func (c *UseCase) GetAllByColumnID(columnID int) ([]dal.ExtendedTask, error) {
+	column, err := c.repo.GetColumn(columnID)
+	if err != nil {
+		return nil, err
+	}
+	return column.Tasks, nil
 }
 
 //=======================================================================================//

@@ -13,8 +13,8 @@ type Column struct {
 	Status    string `json:"status"gorm:"status"`
 }
 type Task struct {
-	ID          int    `json:"id"gorm:"primaryKey; autoIncrement"`
-	Name        string `json:"name"gorm:"name;type:varchar(500);not null"`
+	ID          int    `json:"id"gorm:"primaryKey; autoIncrement; not null"`
+	Name        string `json:"name"gorm:"name;type:varchar(500); not null"`
 	Status      bool   `json:"status"gorm:"status"`
 	Description string `json:"description"gorm:"type:varchar(5000);description"`
 	ColumnID    int    `json:"column_id"gorm:"column_id; not null"`

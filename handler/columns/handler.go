@@ -21,7 +21,7 @@ func NewHandler(service columns.Service, logger *log.Logger) *Handler {
 	return &Handler{logger: logger, service: service}
 }
 
-//===========================================================================//
+//---------------------------------------------------------------------------//
 
 func (h *Handler) GetAllColumns(w http.ResponseWriter, r *http.Request) {
 	h.logger.Print("new get request")
@@ -210,7 +210,7 @@ func (h *Handler) UpdateColumn(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-//===========================================================================//
+//---------------------------------------------------------------------------//
 
 func (h *Handler) GetAllByProjectID(w http.ResponseWriter, r *http.Request) {
 	h.logger.Print("new GetAllByProjectID request")
@@ -243,3 +243,5 @@ func (h *Handler) GetAllByProjectID(w http.ResponseWriter, r *http.Request) {
 	w.Write(payload)
 	w.WriteHeader(http.StatusOK)
 }
+
+//---------------------------------------------------------------------------//

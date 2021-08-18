@@ -44,7 +44,7 @@ func NewRouter(repo dal.Repository, logger *log.Logger) *mux.Router {
 	taskHandler := tasks.NewHandler(taskService, logger)
 
 	router.HandleFunc("/tasks/", taskHandler.GetAllTasks).Methods(http.MethodGet)
-	//router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/", taskHandler.GetTask).Methods(http.MethodGet)
+	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/", taskHandler.GetAllByColumnID).Methods(http.MethodGet)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}", taskHandler.GetTask).Methods(http.MethodGet)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/", taskHandler.CreateTask).Methods(http.MethodPost)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}", taskHandler.DeleteTask).Methods(http.MethodDelete)
@@ -55,7 +55,7 @@ func NewRouter(repo dal.Repository, logger *log.Logger) *mux.Router {
 
 	router.HandleFunc("/comments/", commentHandler.GetAllComments).Methods(http.MethodGet)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID}", commentHandler.GetComment).Methods(http.MethodGet)
-	//router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID}", commentHandler.Get).Methods(http.MethodGet)
+	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/", commentHandler.GetAllByTaskID).Methods(http.MethodGet)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/", commentHandler.CreateComment).Methods(http.MethodPost)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID}", commentHandler.DeleteComment).Methods(http.MethodDelete)
 	router.HandleFunc("/projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID}", commentHandler.UpdateComment).Methods(http.MethodPut)
