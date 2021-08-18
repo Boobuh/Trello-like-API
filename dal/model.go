@@ -1,7 +1,5 @@
 package dal
 
-import "sort"
-
 type Project struct {
 	ID          int    `json:"id" gorm:"primaryKey; autoIncrement"`
 	Name        string `json:"name"gorm:"name;type:varchar(500);not null"`
@@ -25,14 +23,4 @@ type Comment struct {
 	Description string `json:"description"gorm:"description;type:varchar(5000)"`
 	TaskID      int    `json:"task_id"gorm:"task_id; not null"`
 	ID          int    `json:"id"gorm:"primaryKey; autoIncrement"`
-}
-type Columns []Column
-
-func (c Columns) Sort() {
-	//sort by order number
-	sort.SliceStable(c, func(i, j int) bool {
-
-		return c[i].OrderNum < c[j].OrderNum
-
-	})
 }

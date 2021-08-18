@@ -1,18 +1,21 @@
 package projects
 
 import (
+	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/Boobuh/golang-school-project/dal"
 )
 
 type Service interface {
+	//--------------------------------------------------------------//
 	GetProjects() ([]dal.Project, error)
 	GetProject(id int) (*dal.ExtendedProjectEntities, error)
 	CreateProject(project *dal.Project) error
 	DeleteProject(id int) error
-	UpdateProject(r *http.Request, updatedProject dal.Project) error
+	UpdateProject(updatedProject *dal.Project) error
+	//--------------------------------------------------------------//
+
 }
 
 type UseCase struct {
@@ -20,8 +23,19 @@ type UseCase struct {
 	logger *log.Logger
 }
 
-func (c *UseCase) UpdateProject(r *http.Request, updatedProject dal.Project) error {
-	err := c.repo.UpdateProject(r, updatedProject)
+func NewUseCase(repo dal.Repository, logger *log.Logger) *UseCase {
+	return &UseCase{repo: repo, logger: logger}
+}
+
+//=======================================================================================//
+
+func (c *UseCase) UpdateProject(updatedProject *dal.Project) error {
+	_, err := c.repo.GetProject(updatedProject.ID)
+	if err != nil {
+		fmt.Println("project not found by id %s", err)
+		return err
+	}
+	err = c.repo.UpdateProject(updatedProject)
 	return err
 }
 
@@ -38,14 +52,14 @@ func (c *UseCase) CreateProject(project *dal.Project) error {
 	if err != nil {
 		return err
 	}
-	column := &dal.Column{ProjectID: project.ID, Name: "default"}
+	_, err = c.repo.GetProject(project.ID)
+	if err != nil {
+		return err
+	}
+	column := &dal.Column{ProjectID: project.ID, Name: project.Name + "_default"}
 	return c.repo.CreateColumn(column)
 }
 
 func (c *UseCase) DeleteProject(id int) error {
 	return c.repo.DeleteProject(id)
-}
-
-func NewUseCase(repo dal.Repository, logger *log.Logger) *UseCase {
-	return &UseCase{repo: repo, logger: logger}
 }
