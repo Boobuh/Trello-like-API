@@ -43,4 +43,4 @@ List of all endpoints:
 
 Or use swagger.yaml directly
 
-## Link to cloiud service
+## Link to cloud service
