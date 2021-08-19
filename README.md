@@ -15,31 +15,54 @@ Use Postman at http://127.0.0.1:4040/
 List of all endpoints:
 
 /projects/ GET
-/projects/{id} GET 
+
+/projects/{id} GET
+
 /projects/ POST
+
 /projects/ DELETE
+
 /projects/{id} PUT
 
+
 /columns/ GET
+
 /projects/{projectID}/columns/ GET
+
 /projects/{projectID}/columns/{columnID} GET
+
 /projects/{projectID}/columns/ POST
+
 /projects/{projectID}/columns/{columnID} DELETE
+
 /projects/{projectID}/columns/{columnID} PUT
 
+
 /tasks/ GET
+
 /projects/{projectID}/columns/{columnID}/tasks/ GET
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID} GET
+
 /projects/{projectID}/columns/{columnID}/tasks/ POST
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID} DELETE
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID} PUT
 
-/comments/ GET
+
+/comments/ GET 
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID} GET
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/ GET
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/ POST
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID} DELETE
+
 /projects/{projectID}/columns/{columnID}/tasks/{taskID}/comments/{commentID} PUT
+
 
 Or use swagger.yaml directly
 
