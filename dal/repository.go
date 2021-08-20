@@ -1,5 +1,7 @@
 package dal
 
+//go:generate   $GOPATH/bin/mockgen -package mocks -destination=mocks/mock_repository.go -package=mocks github.com/Boobuh/golang-school-project/dal Repository
+
 import (
 	"fmt"
 

@@ -1,12 +1,12 @@
 package columns
 
+//go:generate   $GOPATH/bin/mockgen -package mocks -destination=mocks/mock_service.go -package=mocks github.com/Boobuh/golang-school-project/handler/columns Service
+
 import (
 	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/Boobuh/golang-school-project/service/columns"
 
 	"github.com/Boobuh/golang-school-project/dal"
 	"github.com/gorilla/mux"
@@ -14,10 +14,20 @@ import (
 
 type Handler struct {
 	logger  *log.Logger
-	service columns.Service
+	service Service
 }
 
-func NewHandler(service columns.Service, logger *log.Logger) *Handler {
+type Service interface {
+	GetColumns() ([]dal.Column, error)
+	GetProjectColumn(projectID, columnID int) (*dal.ExtendedColumn, error)
+	CreateColumn(column *dal.Column) error
+	DeleteColumn(projectID, columnID int) error
+	UpdateColumn(updatedColumn *dal.Column) error
+	GetAllByProjectID(projectID int) ([]dal.ExtendedColumn, error)
+	GetColumn(id int) (*dal.ExtendedColumn, error)
+}
+
+func NewHandler(service Service, logger *log.Logger) *Handler {
 	return &Handler{logger: logger, service: service}
 }
 
@@ -29,11 +39,13 @@ func (h *Handler) GetAllColumns(w http.ResponseWriter, r *http.Request) {
 	getColumns, err := h.service.GetColumns()
 	if err != nil {
 		h.logger.Printf("error in GET getColumns call in service.GetColumns call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	payload, err := json.Marshal(getColumns)
 	if err != nil {
 		h.logger.Printf("error in GET getColumns call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -154,6 +166,7 @@ func (h *Handler) DeleteColumn(w http.ResponseWriter, r *http.Request) {
 	err = h.service.DeleteColumn(projectID, columnID)
 	if err != nil {
 		h.logger.Printf("error in DELETE column call:%s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -204,7 +217,8 @@ func (h *Handler) UpdateColumn(w http.ResponseWriter, r *http.Request) {
 	err = h.service.UpdateColumn(&updatedColumn)
 
 	if err != nil {
-		h.logger.Printf("error in UPDATE column call - can't marshal object from db:%s", err.Error())
+		h.logger.Printf("error in UPDATE column call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

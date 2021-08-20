@@ -6,15 +6,6 @@ import (
 	"github.com/Boobuh/golang-school-project/dal"
 )
 
-type Service interface {
-	GetComments() ([]dal.Comment, error)
-	GetComment(projectID, columnID, taskID, commentID int) (*dal.Comment, error)
-	CreateComment(task *dal.Comment) error
-	DeleteComment(projectID, columnID, taskID, commentID int) error
-	UpdateComment(task *dal.Comment) error
-	GetAllByTaskID(taskID int) ([]dal.Comment, error)
-}
-
 type UseCase struct {
 	repo   dal.Repository
 	logger *log.Logger

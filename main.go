@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
+
 	"github.com/Boobuh/golang-school-project/dal"
 
 	"github.com/Boobuh/golang-school-project/handler"
@@ -25,9 +27,12 @@ func main() {
 	logger.SetOutput(f)
 	repo := dal.NewRepository()
 	router := handler.NewRouter(repo, logger)
-	srv := &http.Server{
-		Handler: router,
-		Addr:    "127.0.0.1:4040",
-	}
-	log.Fatal(srv.ListenAndServe())
+
+	allowedOrigin := "*"
+
+	originsOk := handlers.AllowedOrigins([]string{allowedOrigin})
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+
+	log.Fatal(http.ListenAndServe("127.0.0.1:4040", handlers.CORS(originsOk, headersOk, methodsOk)(router)))
 }

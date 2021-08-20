@@ -16,15 +16,6 @@ type UseCase struct {
 	logger *log.Logger
 }
 
-type Service interface {
-	GetColumns() ([]dal.Column, error)
-	GetProjectColumn(projectID, columnID int) (*dal.ExtendedColumn, error)
-	CreateColumn(column *dal.Column) error
-	DeleteColumn(projectID, columnID int) error
-	UpdateColumn(updatedColumn *dal.Column) error
-	GetAllByProjectID(projectID int) ([]dal.ExtendedColumn, error)
-}
-
 //=======================================================================================//
 
 func (c *UseCase) GetColumns() ([]dal.Column, error) {

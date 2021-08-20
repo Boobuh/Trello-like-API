@@ -7,17 +7,6 @@ import (
 	"github.com/Boobuh/golang-school-project/dal"
 )
 
-type Service interface {
-	//--------------------------------------------------------------//
-	GetProjects() ([]dal.Project, error)
-	GetProject(id int) (*dal.ExtendedProjectEntities, error)
-	CreateProject(project *dal.Project) error
-	DeleteProject(id int) error
-	UpdateProject(updatedProject *dal.Project) error
-	//--------------------------------------------------------------//
-
-}
-
 type UseCase struct {
 	repo   dal.Repository
 	logger *log.Logger
@@ -32,7 +21,7 @@ func NewUseCase(repo dal.Repository, logger *log.Logger) *UseCase {
 func (c *UseCase) UpdateProject(updatedProject *dal.Project) error {
 	_, err := c.repo.GetProject(updatedProject.ID)
 	if err != nil {
-		fmt.Println("project not found by id %s", err)
+		fmt.Printf("project not found by id %s\n", err)
 		return err
 	}
 	err = c.repo.UpdateProject(updatedProject)

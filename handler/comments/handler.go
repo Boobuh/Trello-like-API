@@ -1,12 +1,12 @@
 package comments
 
+//go:generate   $GOPATH/bin/mockgen -package mocks -destination=mocks/mock_service.go -package=mocks github.com/Boobuh/golang-school-project/handler/comments Service
+
 import (
 	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/Boobuh/golang-school-project/service/comments"
 
 	"github.com/Boobuh/golang-school-project/dal"
 	"github.com/gorilla/mux"
@@ -14,10 +14,19 @@ import (
 
 type Handler struct {
 	logger  *log.Logger
-	service comments.Service
+	service Service
 }
 
-func NewHandler(service comments.Service, logger *log.Logger) *Handler {
+type Service interface {
+	GetComments() ([]dal.Comment, error)
+	GetComment(projectID, columnID, taskID, commentID int) (*dal.Comment, error)
+	CreateComment(task *dal.Comment) error
+	DeleteComment(projectID, columnID, taskID, commentID int) error
+	UpdateComment(task *dal.Comment) error
+	GetAllByTaskID(taskID int) ([]dal.Comment, error)
+}
+
+func NewHandler(service Service, logger *log.Logger) *Handler {
 	return &Handler{logger: logger, service: service}
 }
 
@@ -27,9 +36,15 @@ func (h *Handler) GetAllComments(w http.ResponseWriter, r *http.Request) {
 	h.logger.Print("new GetAllComments request")
 
 	getComments, err := h.service.GetComments()
+	if err != nil {
+		h.logger.Printf("error in GET getComments call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	payload, err := json.Marshal(getComments)
 	if err != nil {
 		h.logger.Printf("error in GET getComments call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -199,6 +214,7 @@ func (h *Handler) DeleteComment(w http.ResponseWriter, r *http.Request) {
 	err = h.service.DeleteComment(projectID, columnID, taskID, commentID)
 	if err != nil {
 		h.logger.Printf("error in DELETE comment call:%s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -261,6 +277,7 @@ func (h *Handler) UpdateComment(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		h.logger.Printf("error in UPDATE comment call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

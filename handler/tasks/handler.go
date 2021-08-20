@@ -1,23 +1,32 @@
 package tasks
 
+//go:generate   $GOPATH/bin/mockgen -package mocks -destination=mocks/mock_service.go -package=mocks github.com/Boobuh/golang-school-project/handler/tasks Service
+
 import (
 	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/Boobuh/golang-school-project/service/tasks"
-
 	"github.com/Boobuh/golang-school-project/dal"
 	"github.com/gorilla/mux"
 )
 
-type Handler struct {
-	logger  *log.Logger
-	service tasks.Service
+type Service interface {
+	GetTasks() ([]dal.Task, error)
+	GetTask(projectID, columnID, taskID int) (*dal.ExtendedTask, error)
+	CreateTask(task *dal.Task) error
+	DeleteTask(projectID, columnID, taskID int) error
+	UpdateTask(task *dal.Task) error
+	GetAllByColumnID(columnID int) ([]dal.ExtendedTask, error)
 }
 
-func NewHandler(service tasks.Service, logger *log.Logger) *Handler {
+type Handler struct {
+	logger  *log.Logger
+	service Service
+}
+
+func NewHandler(service Service, logger *log.Logger) *Handler {
 	return &Handler{logger: logger, service: service}
 }
 
@@ -25,9 +34,16 @@ func (h *Handler) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	h.logger.Print("new get request")
 
 	getTasks, err := h.service.GetTasks()
+	if err != nil {
+		h.logger.Printf("error in GET getColumns call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	payload, err := json.Marshal(getTasks)
 	if err != nil {
 		h.logger.Printf("error in GET getColumns call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -173,6 +189,7 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	err = h.service.DeleteTask(projectID, columnID, taskID)
 	if err != nil {
 		h.logger.Printf("error in DELETE task call:%s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -224,6 +241,7 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		h.logger.Printf("error in UPDATE task call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

@@ -6,15 +6,6 @@ import (
 	"github.com/Boobuh/golang-school-project/dal"
 )
 
-type Service interface {
-	GetTasks() ([]dal.Task, error)
-	GetTask(projectID, columnID, taskID int) (*dal.ExtendedTask, error)
-	CreateTask(task *dal.Task) error
-	DeleteTask(projectID, columnID, taskID int) error
-	UpdateTask(task *dal.Task) error
-	GetAllByColumnID(columnID int) ([]dal.ExtendedTask, error)
-}
-
 type UseCase struct {
 	repo   dal.Repository
 	logger *log.Logger

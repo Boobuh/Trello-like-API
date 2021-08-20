@@ -1,5 +1,7 @@
 package projects
 
+//go:generate   $GOPATH/bin/mockgen -package mocks -destination=mocks/mock_service.go -package=mocks github.com/Boobuh/golang-school-project/handler/projects Service
+
 import (
 	"encoding/json"
 	"fmt"
@@ -10,13 +12,11 @@ import (
 	"github.com/Boobuh/golang-school-project/dal"
 
 	"github.com/gorilla/mux"
-
-	"github.com/Boobuh/golang-school-project/service/projects"
 )
 
 type Handler struct {
 	logger  *log.Logger
-	service projects.Service
+	service Service
 }
 
 const (
@@ -24,7 +24,18 @@ const (
 	jsonContentType   = "application/json; charset=utf-8"
 )
 
-func NewHandler(service projects.Service, logger *log.Logger) *Handler {
+type Service interface {
+	//--------------------------------------------------------------//
+	GetProjects() ([]dal.Project, error)
+	GetProject(id int) (*dal.ExtendedProjectEntities, error)
+	CreateProject(project *dal.Project) error
+	DeleteProject(id int) error
+	UpdateProject(updatedProject *dal.Project) error
+	//--------------------------------------------------------------//
+
+}
+
+func NewHandler(service Service, logger *log.Logger) *Handler {
 	return &Handler{service: service, logger: logger}
 }
 
@@ -34,9 +45,15 @@ func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 	h.logger.Print("new get request")
 
 	getProjects, err := h.service.GetProjects()
+	if err != nil {
+		h.logger.Printf("error in GET getProjects call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	payload, err := json.Marshal(getProjects)
 	if err != nil {
 		h.logger.Printf("error in GET getProjects call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -92,14 +109,13 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	project := h.service.CreateProject(&newProject)
-	payload, err := json.Marshal(project)
+	err = h.service.CreateProject(&newProject)
 	if err != nil {
-		h.logger.Printf("error in CREATE projects call - can't marshal object from db:%s", err.Error())
+		h.logger.Printf("error in CREATE projects call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
+
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(payload)
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -118,14 +134,12 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project := h.service.DeleteProject(id)
-	payload, err := json.Marshal(project)
+	err = h.service.DeleteProject(id)
 	if err != nil {
-		h.logger.Printf("error in DELETE projects call - can't marshal object from db:%s", err.Error())
+		h.logger.Printf("error in DELETE projects call:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(payload)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -158,6 +172,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		h.logger.Printf("error in UPDATE projects call - can't marshal object from db:%s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

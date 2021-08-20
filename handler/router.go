@@ -21,6 +21,7 @@ import (
 
 func NewRouter(repo dal.Repository, logger *log.Logger) *mux.Router {
 	router := mux.NewRouter()
+
 	projectService := projectUseCase.NewUseCase(repo, logger)
 	projectHandler := projects.NewHandler(projectService, logger)
 
