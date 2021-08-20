@@ -1,0 +1,15 @@
+.idea/
+.vscode/
+*.xml
+*.out
+*.log
+*.test
+*.exe
+glide.lock
+vendor/
+.gometaliner.json
+coverage.xml
+cover-cobertura.xml
+bin/
+cover.out.tmp
+testlogfile
