@@ -67,3 +67,8 @@ List of all endpoints:
 Or use swagger.yaml directly
 
 ## Link to cloud service
+
+https://golang-school-project-boobuh.herokuapp.com/
+
+Example:
+https://golang-school-project-boobuh.herokuapp.com/projects/
